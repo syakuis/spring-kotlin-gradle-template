@@ -1,8 +1,6 @@
 application:
   name: ${rootProject.name}
   version: ${version}
-debug: false
-trace: false
 logging:
   file:
     name: ${rootProject.name}.log
@@ -17,7 +15,6 @@ logging:
   level:
     root: info
     io.github.syakuis: trace
-    org.springframework: info
     org.springframework.web: info
     org.hibernate.SQL: trace
     org.hibernate.type.descriptor.sql.BasicBinder: trace
@@ -37,9 +34,6 @@ server:
 spring:
   main:
     banner-mode: console
-  devtools:
-    livereload:
-      enabled: true
   messages:
     basename: i18n/message
   datasource:

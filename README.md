@@ -1,6 +1,6 @@
 # Spring Gradle Template
 
-## Installing Gradle 6.5
+## Installing Gradle
 
 https://docs.gradle.org/current/userguide/installation.html
 

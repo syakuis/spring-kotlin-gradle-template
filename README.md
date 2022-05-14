@@ -1,5 +1,10 @@
 # Spring Gradle Template
 
+## Spec
+
+- Java 17
+- Gradle 7.2
+
 ## Installing Gradle
 
 https://docs.gradle.org/current/userguide/installation.html
@@ -7,7 +12,7 @@ https://docs.gradle.org/current/userguide/installation.html
 spring boot 2.3.x 부터 gradle 6.x 버전 필요
 
 ```
-$ ./gradlew wrapper --gradle-version=6.5
+$ ./gradlew wrapper --gradle-version=7.2
 ```
 
 ## 개발

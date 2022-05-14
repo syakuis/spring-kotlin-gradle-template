@@ -10,7 +10,7 @@ buildscript {
         junitVersion = "5.7.1"
         restDocsVersion = "2.0.5.RELEASE"
         jacksonVersion = "2.11.4"
-        kotlinVersion = "1.5.10"
+        kotlinVersion = "1.6.21"
         kotestVersion = "4.6.0"
     }
 
@@ -62,19 +62,19 @@ repositories {
 group groupId
 version versionName
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 compileKotlin {
     kotlinOptions {
         freeCompilerArgs = ["-Xjsr305=strict"]
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 compileTestKotlin {
     kotlinOptions {
         freeCompilerArgs = ["-Xjsr305=strict"]
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 

@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfigu
 import java.nio.charset.StandardCharsets
 
 @Configuration(proxyBeanMethods = false)
-class WebConfiguration (private val objectMapper: ObjectMapper) : DelegatingWebMvcConfiguration() {
+class WebMvcConfiguration (private val objectMapper: ObjectMapper) : DelegatingWebMvcConfiguration() {
     override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>?>) {
         converters.add(StringHttpMessageConverter(StandardCharsets.UTF_8))
         converters.add(MappingJackson2HttpMessageConverter(objectMapper))

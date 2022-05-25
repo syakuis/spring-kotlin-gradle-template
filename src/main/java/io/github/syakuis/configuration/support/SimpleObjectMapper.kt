@@ -19,7 +19,6 @@ class SimpleObjectMapper {
         private const val DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
 
         fun of(objectMapper: ObjectMapper): ObjectMapper {
-            // https://www.baeldung.com/spring-boot-customize-jackson-objectmapper
             val module = JavaTimeModule()
             module.addSerializer(
                 LocalDateTime::class.java,

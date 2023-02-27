@@ -1,14 +1,17 @@
-// https://docs.spring.io/spring-boot/docs/2.4.5/reference/html/dependency-versions.html#dependency-versions
-// https://docs.spring.io/spring-boot/docs/2.4.5/reference/htmlsingle
-// https://docs.spring.io/spring-cloud/docs/2020.0.3/reference/html/
+// https://docs.spring.io/spring-boot/docs/2.7.9/reference/html/dependency-versions.html#dependency-versions
+// https://docs.spring.io/spring-boot/docs/2.7.9/reference/htmlsingle
+// https://docs.spring.io/spring-cloud/docs/2021.0.5/reference/html/
 buildscript {
     ext {
-        groupId = "io.github.syaku"
+        groupId = "io.github.syakuis"
         versionName = "1.0.0-SNAPSHOT"
-        springBootVersion = "2.4.5"
-        springCloudVersion = "2020.0.3"
+        springBootVersion = "2.7.3"
+        springCloudVersion = "2021.0.3"
+
+        restDocsVersion = "2.0.6.RELEASE"
+        snippetsDir = file("$buildDir/generated-snippets")
+
         junitVersion = "5.7.1"
-        restDocsVersion = "2.0.5.RELEASE"
         jacksonVersion = "2.11.4"
         kotlinVersion = "1.6.21"
         kotestVersion = "4.6.0"
@@ -25,7 +28,8 @@ buildscript {
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
-        classpath "org.asciidoctor:asciidoctor-gradle-plugin:1.5.3"
+        classpath "org.asciidoctor:asciidoctor-gradle-jvm:3.3.2"
+
         classpath "org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}"
         classpath "org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
@@ -34,7 +38,7 @@ buildscript {
 }
 
 wrapper {
-    gradleVersion = "7.2"
+    gradleVersion = "7.6"
 }
 
 apply plugin: "kotlin"
@@ -44,7 +48,7 @@ apply plugin: "kotlin-kapt"
 apply plugin: "application"
 apply plugin: "org.springframework.boot"
 apply plugin: "io.spring.dependency-management"
-apply plugin: "org.asciidoctor.convert"
+apply plugin: "org.asciidoctor.jvm.convert"
 apply plugin: "org.sonarqube"
 apply plugin: "jacoco"
 apply plugin: "io.kotest"
@@ -82,7 +86,7 @@ compileJava.options.encoding = 'UTF-8'
 
 configurations {
     implementation.exclude module: "spring-boot-starter-tomcat"
-    testImplementation.exclude group: "junit", module: "junit"
+    asciidoctorExtensions
 }
 
 processResources {
@@ -98,21 +102,19 @@ dependencyManagement {
 }
 
 dependencies {
-    asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${restDocsVersion}"
-    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${restDocsVersion}"
-
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:${jacksonVersion}"
-
-    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-
-    runtimeOnly "org.springframework.boot:spring-boot-devtools"
     kapt "org.springframework.boot:spring-boot-configuration-processor"
     implementation "org.springframework.boot:spring-boot-starter-validation"
 
     implementation "org.springframework.boot:spring-boot-starter-undertow"
     implementation "org.springframework.boot:spring-boot-starter-web"
-    // or implementation "org.springframework.boot:spring-boot-starter"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
+
+    asciidoctorExtensions "org.springframework.restdocs:spring-restdocs-asciidoctor:${restDocsVersion}"
+    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${restDocsVersion}"
+    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:${jacksonVersion}"
 
     testImplementation "com.h2database:h2:1.4.191"
     compileOnly "com.h2database:h2:1.4.191"
@@ -129,26 +131,19 @@ dependencies {
     testImplementation "io.kotest:kotest-property-jvm:${kotestVersion}"
 }
 
-// <------- RestDocs & Asciidoctor
-def snippetsDir = file("${buildDir}/generated-snippets")
-
 asciidoctor {
     attributes "snippets": snippetsDir
     inputs.dir snippetsDir
+    configurations 'asciidoctorExtensions'
     dependsOn test
 }
-
-asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')
-}
-// ------- RestDocs & Asciidoctor ->
 
 sonarqube {
     properties {
         property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.organization", "syakuis-github"
-        property "sonar.projectKey", "syakuis-github"
-        property "sonar.projectName", "spring-gradle-template"
+        property "sonar.organization", ""
+        property "sonar.projectKey", ""
+        property "sonar.projectName", "spring-kotlin-gradle-template"
         property "sonar.language", "java"
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.sources", "src/main/java"
@@ -169,16 +164,6 @@ test {
     systemProperty 'spring.profiles.active', 'test'
 }
 
-task copyAsciidoc(type: Copy) {
-    dependsOn asciidoctor
-    from file("${buildDir}/asciidoc/html5")
-    into file("src/main/resources/static/docs")
-}
-
-build {
-    dependsOn copyAsciidoc
-}
-
 application {
     mainClass = "${groupId}.ApplicationKt"
 }
@@ -188,7 +173,7 @@ bootJar {
     launchScript()
     dependsOn asciidoctor
     from("${asciidoctor.outputDir}/html5") {
-        into "BOOT-INF/classes/static/docs"
+        into "BOOT-INF/classes/static/api-docs"
     }
 }
 

@@ -1,51 +1,49 @@
-application:
-  name: ${rootProject.name}
-  version: ${version}
 logging:
-  file:
-    name: ${rootProject.name}.log
-    path:
-  logback:
-    rollingpolicy:
-      #      file-name-pattern:
-      clean-history-on-start: false
-      max-file-size: 10MB
-      total-size-cap: 20GB
-      max-history: 30
   level:
     root: info
-    io.github.syakuis: trace
     org.springframework.web: info
+    io.github.syakuis: trace
     org.hibernate.SQL: trace
+    org.hibernate.type.descriptor.sql: trace
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     org.hibernate.type.descriptor.sql.BasicExtractor: off
     org.hibernate.engine.jdbc.batch.internal.BatchingBatch: off
+#    com.zaxxer.hikari: info
+#    org.hibernate.transaction.JDBCTrabsaction: info
+#    org.hibernate.jdbc.ConnectionManager: info
+#    org.springframework.orm.jpa.JpaTransactionManager: info
 server:
   port: 8080
-#  forward-headers-strategy: native
-#  tomcat:
-#    port-header: X-Forwarded-Port
-#    remote-ip-header: X-Forwarded-For
-#    protocol-header: X-Forwarded-Proto
-#    accesslog:
-#      directory:
-#      enabled: false
-#      file-date-format: .yyyy-MM-dd
+  forward-headers-strategy: native
 spring:
+  application:
+    name: spring-kotlin-gradle-template
+  config:
+    import:
+      - classpath:properties/logback.yml
   main:
     banner-mode: console
   messages:
     basename: i18n/message
+  h2:
+    console:
+      enabled: false
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password:
-    initialization-mode: never
-    schema: classpath:schema/schema.sql
-    data: classpath:schema/data.sql
+    hikari:
+      max-lifetime: 600000
+      data-source-properties:
+        rewriteBatchedStatements: true
   jpa:
+    database: h2
     database-platform: org.hibernate.dialect.H2Dialect
     open-in-view: false
     hibernate:
@@ -55,3 +53,8 @@ spring:
       hibernate:
         show_sql: false
         format_sql: true
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        one-indexed-parameters: true

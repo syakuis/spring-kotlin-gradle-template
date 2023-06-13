@@ -1,7 +1,10 @@
 application-default.yml
 application-default.properties
-build.yml
-src/main/resources/static/api-docs
+gradle.properties
+src/main/resources/static/api-docs/
+src/docs/asciidoc/*.pdf
+src/docs/asciidoc/*.html
+http/http-client.private.env.json
 
 *~
 .DS_Store

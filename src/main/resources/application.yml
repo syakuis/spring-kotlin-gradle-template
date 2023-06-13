@@ -8,16 +8,12 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     org.hibernate.type.descriptor.sql.BasicExtractor: off
     org.hibernate.engine.jdbc.batch.internal.BatchingBatch: off
-#    com.zaxxer.hikari: info
-#    org.hibernate.transaction.JDBCTrabsaction: info
-#    org.hibernate.jdbc.ConnectionManager: info
-#    org.springframework.orm.jpa.JpaTransactionManager: info
 server:
   port: 8080
   forward-headers-strategy: native
 spring:
   application:
-    name: spring-kotlin-gradle-template
+    name: spring-gradle-template-for-kotlin
   config:
     import:
       - classpath:properties/logback.yml
@@ -47,7 +43,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
       use-new-id-generator-mappings: false
     properties:
       hibernate:

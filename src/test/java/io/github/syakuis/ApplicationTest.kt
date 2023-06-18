@@ -24,7 +24,7 @@ internal class ApplicationTest : BehaviorSpec() {
     private lateinit var objectMapper: ObjectMapper
 
     init {
-        Given("spring bean 테스트") {
+        this.Given("spring bean 테스트") {
             Then("bean 생성되었다") {
                 messageSource shouldNotBe null
                 messageSourceAccessor shouldNotBe null
